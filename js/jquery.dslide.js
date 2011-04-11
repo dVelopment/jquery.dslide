@@ -134,7 +134,7 @@ THE SOFTWARE.
 	}
 	
 	var moveTo = function(index, indexRight) {
-		if (!indexRight)
+		if (indexRight == null)
 			indexRight = index;
 		
 		var offsetCurrent = $(rightImages[currentRight]).offset();
