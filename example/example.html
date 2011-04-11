@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<script type="text/javascript" src="../js/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="../js/jquery.dslide.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#wrapper').DSlide();
+	
+	$('#stop').bind('click', function() {
+		$('#wrapper').DSlide('stop');
+	});
+	$('#start').bind('click', function() {
+		$('#wrapper').DSlide('start');
+	});
+	$('#reset').bind('click', function() {
+		$('#wrapper').DSlide('reset');
+	});
+});
+</script>
+
+<link rel="stylesheet" media="screen" type="text/css" href="../css/dslide.css" />
+
+</head>
+<body>
+<div id="wrapper">
+	<ul>
+		<li>
+			<img src="../images//sample/image1.jpg" alt="image1" width="693" height="458" />
+		</li>
+		<li>
+			<img src="../images//sample/image2.jpg" alt="image2" width="693" height="458" />
+		</li>
+		<li>
+			<img src="../images//sample/image3.jpg" alt="image3" width="693" height="458" />
+		</li>
+		<li>
+			<img src="../images//sample/image4.jpg" alt="image4" width="693" height="458" />
+		</li>
+		<li>
+			<img src="../images//sample/image5.jpg" alt="image5" width="693" height="458" />
+		</li>
+		<li>
+			<img src="../images//sample/image6.jpg" alt="image6" width="693" height="458" />
+		</li>
+		<li>
+			<img src="../images//sample/image7.jpg" alt="image7" width="693" height="458" />
+		</li>
+		<li>
+			<img src="../images//sample/image8.jpg" alt="image8" width="693" height="458" />
+		</li>
+		<li>
+			<img src="../images//sample/image9.jpg" alt="image9" width="693" height="458" />
+		</li>
+	</ul>
+</div>
+<div class="buttons">
+	<button id="start">Start</button>
+	<button id="stop">Stop</button>
+	<button id="reset">Reset</button>
+</div>
+</body>
+</html>

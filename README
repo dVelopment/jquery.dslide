@@ -1,0 +1,62 @@
+DSlide is a jQuery plugin to create a slideshow out of an unsorted list.
+
+current version: 0.1
+
+== Installation/Usage
+
+add the following tags to the head section of your html page
+
+	<script type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery.dslide.js"></script>
+	
+	<link rel="stylesheet" media="screen" type="text/css" href="css/dslide.css" />
+
+create a <ul> inside your wrapper <div>, containing the images in <li>-elements
+
+<div id="wrapper">
+	<ul>
+		<li>
+			<img src="..." />
+		</li>
+		.
+		.
+		.
+	</ul>
+</div>
+
+initiate the slider
+jQuery(document).ready(function() {
+	jQuery('#wrapper').DSlide();
+});
+
+== available settings
+
+cssPrefix: string
+	the prefix, the dynamically generated DOM elements should have on ther css classname (default: 'dslide-')
+
+autoStart: boolean
+	if set to true, the slideshow start's immediatly after initiating
+
+duration: float
+	duration of transition in seconds - default: 1
+
+frequency: float
+	seconds to wait between automatic transition - default: 5
+	
+Pass the options as parameter on initiate-call
+	jQuery('#wrapper').DSlide({duration: 0.5, frequency: 7});
+	
+if autoStart is set to false, you can start the animation by calling start
+	jQuery('#wrapper').DSlide('start');
+
+you can stop the animation by calling stop
+	jQuery('#wrapper').DSlide('stop');
+	
+you can reset the slideshow to initial images by calling reset
+	jQuery('#wrapper').DSlide('reset');
+	
+== Licenses
+jquery.dslide is licensed under the terms of MIT-License.
+
+the sample images contained in the example folder are licensed under creative commons Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
+http://creativecommons.org/licenses/by-nc/3.0/
