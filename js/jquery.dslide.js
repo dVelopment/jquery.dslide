@@ -101,6 +101,7 @@ THE SOFTWARE.
 		},
 		
 		start: function() {
+			next();
 			timer = window.setInterval(next, settings.frequency*1000);
 		},
 		
