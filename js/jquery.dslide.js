@@ -82,9 +82,12 @@ THE SOFTWARE.
 						second = 0;
 */
 					$(images[second]).clone().appendTo(rightSliderDiv);
+					rightSliderDiv.data('index', second);
 					
+					rightSliderDiv.bind('click', click);
 					leftImages.push(sliderDiv);
 					rightImages.push(rightSliderDiv);
+					
 				}
 				
 				//remove ul
@@ -120,6 +123,22 @@ THE SOFTWARE.
 			moveTo(0);
 		}
 	};
+	
+	var click = function (event) {
+	   var element = event.currentTarget;
+	   
+	   var index = ($(element).data('index'));
+	   var rightIndex = index - 1;
+	   
+	   if (rightIndex < 0)
+	       rightIndex = rightImages.length - 1 + rightIndex;
+	   
+	   if (rightIndex > rightImages.length - 3)
+	       rightIndex = 0;
+	       
+	   moveTo(index, rightIndex);
+	   methods.stop();
+	}
 	
 	var next = function() {
 		var nextIndex = current + 1;
