@@ -97,14 +97,19 @@ THE SOFTWARE.
 					methods.start();
 				
 				if (settings.overlay) {
-					var overlay = $('<div></div>').addClass(settings.cssPrefix + 'overlay');
-					overlay.appendTo(slider);
+					var overlayTL = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('tl');
+					overlayTL.appendTo(slider);
+					var overlayTR = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('tr');
+					overlayTR.appendTo(slider);
+					var overlayBL = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('bl');
+					overlayBL.appendTo(slider);
+					var overlayBR = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('br');
+					overlayBR.appendTo(slider);
 				}
 			});
 		},
 		
 		start: function() {
-			next();
 			timer = window.setInterval(next, settings.frequency*1000);
 		},
 		

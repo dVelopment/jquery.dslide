@@ -21,12 +21,33 @@
 
 .dslide-overlay {
 	position: absolute;
-	top: 0px;
-	left: 0px;
 	z-index: 999;
 	background: url(../images/overlay.png) 0px 0px no-repeat;
-	width: 924px;
-	height: 456px;
+	width: 7px;
+	height: 6px;
+}
+
+.dslide-overlay.tl {
+    top: 0px;
+    left: 0px;
+}
+
+.dslide-overlay.tr {
+    top: 0px;
+    right: 0px;
+    background-position: -7px 0px;
+}
+
+.dslide-overlay.bl {
+    bottom: 0px;
+    left: 0px;
+    background-position: 0px -6px;
+}
+
+.dslide-overlay.br {
+    bottom: 0px;
+    right: 0px;
+    background-position: -7px -6px;
 }
 
 .dslide-slider-right {
