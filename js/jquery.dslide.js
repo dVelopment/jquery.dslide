@@ -28,169 +28,202 @@ THE SOFTWARE.
 */
 
 (function ($) {
-	var settings = {
-		cssPrefix: 'dslide-',
-		duration: 1,
-		frequency: 5,
-		autoStart: true,
-		overlay: true
-	};
-	
-	var slider = $('<div></div>');
-	var leftSlider = $('<div></div>');
-	var rightSlider = $('<div></div>');
-	var leftImages = [];
-	var rightImages = [];
-	
-	var timer = null;
-	
-	var current = 0;
-	var currentRight = 0;
-	
 	var methods = {
 		init: function(options) {
 			return this.each(function() {
-				if (options) {
-					$.extend(settings, options);
-				}
-				
-				var images = $(this).find('li > img');
-				
-				if (images.length == 0)
-					return;
-				
-				//setup slider
-				$(this).append(slider);
-				slider.addClass(settings.cssPrefix + 'slider');
-				
-				slider.append(leftSlider);
-				slider.append(rightSlider);
-				
-				leftSlider.addClass(settings.cssPrefix + 'slider-left');
-				rightSlider.addClass(settings.cssPrefix + 'slider-right');
-				
-				for (var i = 0; i < images.length; i++) {
-					var sliderDiv = $('<div></div>').addClass(settings.cssPrefix + 'slider-left-div').appendTo(leftSlider);
-					if (i > 0)
-						sliderDiv.css('display', 'none');
-					//move to main slider
-					$(images[i]).appendTo(sliderDiv);
-					var rightSliderDiv = $('<div></div>').addClass(settings.cssPrefix + 'slider-right-div').appendTo(rightSlider);
-					var second = images.length - i - 1;
-/*
-					if (second > images.length)
-						second = 0;
-*/
-					$(images[second]).clone().appendTo(rightSliderDiv);
-					rightSliderDiv.data('index', second);
+				var $this = $(this),
+					data = $this.data('dslide-data');
 					
-					rightSliderDiv.bind('click', click);
-					leftImages.push(sliderDiv);
-					rightImages.push(rightSliderDiv);
+				if (!data) {
+					var settings = {
+						cssPrefix: 'dslide-',
+						duration: 1,
+						frequency: 5,
+						autoStart: true,
+						overlay: true
+					};
 					
-				}
-				
-				//remove ul
-				$(this).find('ul').remove();
-				
-				if (settings.autoStart)
-					methods.start();
-				
-				if (settings.overlay) {
-					var overlayTL = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('tl');
-					overlayTL.appendTo(slider);
-					var overlayTR = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('tr');
-					overlayTR.appendTo(slider);
-					var overlayBL = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('bl');
-					overlayBL.appendTo(slider);
-					var overlayBR = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('br');
-					overlayBR.appendTo(slider);
+					var slider = $('<div></div>');
+					var leftSlider = $('<div></div>');
+					var rightSlider = $('<div></div>');
+					var leftImages = [];
+					var rightImages = [];
+					
+					var timer = null;
+					
+					if (options) {
+						$.extend(settings, options);
+					}
+					
+					var images = $(this).find('li > img');
+					
+					if (images.length == 0)
+						return;
+					
+					//setup slider
+					$(this).append(slider);
+					slider.addClass(settings.cssPrefix + 'slider');
+					
+					slider.append(leftSlider);
+					slider.append(rightSlider);
+					
+					leftSlider.addClass(settings.cssPrefix + 'slider-left');
+					rightSlider.addClass(settings.cssPrefix + 'slider-right');
+					
+					for (var i = 0; i < images.length; i++) {
+						var sliderDiv = $('<div></div>').addClass(settings.cssPrefix + 'slider-left-div').appendTo(leftSlider);
+						if (i > 0)
+							sliderDiv.css('display', 'none');
+						//move to main slider
+						$(images[i]).appendTo(sliderDiv);
+						var rightSliderDiv = $('<div></div>').addClass(settings.cssPrefix + 'slider-right-div').appendTo(rightSlider);
+						var second = images.length - i - 1;
+	/*
+						if (second > images.length)
+							second = 0;
+	*/
+						$(images[second]).clone().appendTo(rightSliderDiv);
+						rightSliderDiv.data('dslide-data', {target: $this, index: second});
+						
+						rightSliderDiv.bind('click', click);
+						leftImages.push(sliderDiv);
+						rightImages.push(rightSliderDiv);
+						
+					}
+					
+					//remove ul
+					$(this).find('ul').remove();
+					
+					if (settings.overlay) {
+						var overlayTL = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('tl');
+						overlayTL.appendTo(slider);
+						var overlayTR = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('tr');
+						overlayTR.appendTo(slider);
+						var overlayBL = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('bl');
+						overlayBL.appendTo(slider);
+						var overlayBR = $('<div></div>').addClass(settings.cssPrefix + 'overlay').addClass('br');
+						overlayBR.appendTo(slider);
+					}
+					
+					$(this).data('dslide-data',{
+						target: $this,
+						settings: settings,
+						slider: slider,
+						leftSlider: leftSlider,
+						rightSlider: rightSlider,
+						leftImages: leftImages,
+						rightImages: rightImages,
+						timer: timer,
+						current: 0,
+						currentRight: 0
+					});
+					
+					if (settings.autoStart)
+						methods.start($(this));
+					
 				}
 			});
 		},
 		
-		start: function() {
-			timer = window.setInterval(next, settings.frequency*1000);
+		start: function($this) {
+			if (!$this)
+				$this = $(this);
+			var data = $this.data('dslide-data');
+             
+            if (!data)
+				return;
+			
+			data.timer = window.setInterval(function(){methods.next($this);}, data.settings.frequency*1000);
 		},
 		
-		stop: function() {
-			if (timer) {
-				window.clearInterval(timer);
-				timer = null;
+		stop: function($this) {
+			var data = $this.data('dslide-data');
+			
+			if (data.timer) {
+				window.clearInterval(data.timer);
+				data.timer = null;
 			}
 		},
 		
 		reset: function() {
-			if (timer) {
-				window.clearInterval(timer);
-				timer = null;
+			var $this = $(this),
+				data = $this.data('dslide-data');
+			
+			if (data.timer) {
+				window.clearInterval(data.timer);
+				data.timer = null;
 			}
-			moveTo(0);
+			methods.moveTo($this, 0);
+		},
+
+		next: function($this) {
+	    	var data = $this.data('dslide-data');
+	    	
+			var nextIndex = data.current + 1;
+			var rightIndex = data.currentRight + 1;
+			
+			if (nextIndex >= data.leftImages.length)
+				nextIndex = 0;
+				
+			if (rightIndex > data.rightImages.length - 3)
+				rightIndex = 0;
+			
+			methods.moveTo($this, nextIndex, rightIndex);
+		},
+		
+		moveTo: function($this, index, indexRight) {
+	    	var data = $this.data('dslide-data');
+	    	
+			if (indexRight == null)
+				indexRight = index;
+			
+			var offsetCurrent = $(data.rightImages[data.currentRight]).offset();
+			var offsetNext = $(data.rightImages[indexRight]).offset();
+			
+			var moveY = offsetCurrent.top - offsetNext.top;
+			
+			var string = '+=';
+			
+			if (moveY < 0) {
+				string = '-=';
+				moveY = moveY * -1;
+			}
+			
+			string += parseInt(moveY);
+			$(data.rightSlider).animate({
+				top:string,
+			}, {
+				duration: data.settings.duration*1000
+			}
+			
+			);
+			
+			$(data.leftImages[data.current]).fadeOut(data.settings.duration*1000);
+			$(data.leftImages[index]).fadeIn(data.settings.duration*1000);
+			
+			data.current = index;
+			data.currentRight = indexRight;
 		}
+		
 	};
 	
 	var click = function (event) {
-	   var element = event.currentTarget;
-	   
-	   var index = ($(element).data('index'));
+		var $this = $(this),
+    		data = $this.data('dslide-data');
+    		
+    	var parentData = $(data.target).data('dslide-data');
+
+	   var index = (data.index);
 	   var rightIndex = index - 1;
 	   
 	   if (rightIndex < 0)
-	       rightIndex = rightImages.length - 1 + rightIndex;
+	       rightIndex = parentData.rightImages.length - 1 + rightIndex;
 	   
-	   if (rightIndex > rightImages.length - 3)
+	   if (rightIndex > parentData.rightImages.length - 3)
 	       rightIndex = 0;
 	       
-	   moveTo(index, rightIndex);
-	   methods.stop();
-	}
-	
-	var next = function() {
-		var nextIndex = current + 1;
-		var rightIndex = currentRight + 1;
-		
-		if (nextIndex >= leftImages.length)
-			nextIndex = 0;
-			
-		if (rightIndex > rightImages.length - 3)
-			rightIndex = 0;
-		
-		moveTo(nextIndex, rightIndex);
-	}
-	
-	var moveTo = function(index, indexRight) {
-		if (indexRight == null)
-			indexRight = index;
-		
-		var offsetCurrent = $(rightImages[currentRight]).offset();
-		var offsetNext = $(rightImages[indexRight]).offset();
-		
-		var moveY = offsetCurrent.top - offsetNext.top;
-		
-		var string = '+=';
-		
-		if (moveY < 0) {
-			string = '-=';
-			moveY = moveY * -1;
-		}
-		
-		string += parseInt(moveY);
-		$(rightSlider).animate({
-			top:string,
-		}, {
-			duration: settings.duration*1000,
-			complete: function() {
-/* 				$(rightImages[index]).appendTo(rightSlider); */
-			}
-		}
-		
-		);
-		
-		$(leftImages[current]).fadeOut(settings.duration*1000);
-		$(leftImages[index]).fadeIn(settings.duration*1000);
-		
-		current = index;
-		currentRight = indexRight;
+	   methods.moveTo($(data.target), index, rightIndex);
+	   methods.stop($(data.target));
 	}
 	
 	$.fn.DSlide = function(method) {
